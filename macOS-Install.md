@@ -159,10 +159,6 @@ sed -i.bak '
   /export DYLD_LIBRARY_PATH=/ {
     h; s|$|:${HOME}/local/lib|
   }
-  ${
-    x; /./ { x; q0 }
-    x; s|.*|export DYLD_LIBRARY_PATH=${HOME}/local/lib:\$SYLD_LIBRARY_PATH|; h
-  }
 ' ~/.bashrc && source ~/.bashrc
 ```
 

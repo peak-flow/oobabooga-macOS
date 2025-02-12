@@ -2,6 +2,7 @@
 
 ## Latest Update
 
+- [12 Feb 2025 - Virtual Environment Utilities as been updates and released](#12-feb-2025---virtual-environment-utilities-as-been-updates-and-released)
 - [28 Nov 2024 - Announcing Venvutil: Streamlining Python Virtual Environments](#28-nov-2024---announcing-venvutil-streamlining-python-virtual-environments)
 - [16 Nov 2024 - NumPy build for Apple Silicon: NumPy 1.26 solved](#16-nov-2024---numpy-build-for-apple-silicon-numpy-1.26-solved)
 - [01 Oct 2024 - Library dependencies have changed](#01-oct-2024---library-dependencies-have-changed)
@@ -9,7 +10,7 @@
 
 ## Background
 
- This stared out as a guide to getting oobabooga working with Apple Silicon better, but has turned out to contain now useful information regarding how to get numerical analysis, data science, and AI core software running to take advantage of the Apple Silicon M1 and M2 processor technologies. There is information in the guides for installing OpenBLAS, LAPACK, Pandas, NumPy, PyTorch/Torch and llama-cpp-python. I will probably create a new repository for all things Apple Silicon in the interest of getting maximum performance out of the M1 and M2 architecture.
+This stared out as a guide to getting oobabooga working with Apple Silicon better, but has turned out to contain now useful information regarding how to get numerical analysis, data science, and AI core software running to take advantage of the Apple Silicon M1 and M2 processor technologies. There is information in the guides for installing OpenBLAS, LAPACK, Pandas, NumPy, PyTorch/Torch and llama-cpp-python. I will probably create a new repository for all things Apple Silicon in the interest of getting maximum performance out of the M1 and M2 architecture.
 
 ## You probably want this: [Building Apple Silicon Support for oobabooga text-generation-webui](https://github.com/unixwzrd/oobabooga-macOS/blob/main/macOS-Install.md)
 
@@ -17,9 +18,19 @@
 
 In the test-scripts directory, there are some random Python scripts using tensors to test things like data types for MPS and other compute engines.  Nothing special, just hacked together in a few minutes for checking GPU utilization and AutoCast Data Typing. BLAS and LAPACK are no longer required to be build.
 
+## 12 Feb 2025 - Virtual Environment Utilities as been updates and released
+
+I've updated the Venvutil repository and released a new version.  It now includes a new tool, `vdiff`  which will compare two different virtual environments and list the differences.  It will also list the differences between the same virtual environment at different points in time.  It will also list the differences between the Python packages in the virtual environment and the Python packages in the system.
+
+All the test scripts here have been moved in to that repository and there are many other tools for working with Python Virtual Environments and LLM's.
+
+I was able to get oobabooga to work, but had to make a couple of tweaks.  I think I'm looking at other alternatives for the future, but this will work for now.
+
 ## 28 Nov 2024 - Announcing Venvutil: Streamlining Python Virtual Environments  
 
-I’m excited to release **Venvutil**, a versatile toolset for building and managing Python Virtual Environments. While it’s still evolving, the current release offers several powerful features and solutions for common challenges, including workarounds for Meson builds for NumPy 1.26.4.  
+I’m excited to release **Venvutil**, a versatile toolset for building and managing Python Virtual Environments. While it’s still evolving, the current release offers several powerful features and solutions for common challenges, including workarounds for Meson builds for NumPy 1.26.4.
+
+If you are thinking about using NumPy for anything, you should use `numpy-compile` in the [Virtual Environment Tools repository](https://github.com/unixwzrd/venvutil) to build NumPy for Apple Silicon. There are some scripts you can run in there which will measure the performance of NumPy so you can see how it compares to other versions like the pre-compiled or bundled versions.
 
 ### Addressing the Meson Build Issue  
 
@@ -33,32 +44,36 @@ Setting up Venvutil is straightforward. Run the following commands:
 git clone https://github.com/unixwzrd/venvutil.git
 cd venvutil
 bash setup.sh install
+```
 
 This installs Venvutil in $HOME/local/venvutil/bin. The installer is designed to be non-destructive and includes:
- • Conda setup
- • NLTK and Rich installation
- • The core Venvutil payload
+  • Conda setup
+  • NLTK and Rich installation
+  • The core Venvutil payload
 
 Key Features
 
- • Environment Tracking: Logs and tracks all changes to your Python virtual environments, aiding in recreation and debugging.
- • Basic venvvdiff: Compare two virtual environments easily.
- • Meson Workarounds: Custom scripts replace --version with -v, enabling successful builds on macOS and RHEL 9.
- • Accelerate Framework: Leverages Apple Silicon’s performance advantages for NumPy compilation.
+  • Environment Tracking: Logs and tracks all changes to your Python virtual environments, aiding in recreation and debugging.
+  • Basic `vdiff`: Compare two virtual environments easily.
+  • Meson Workarounds: Custom scripts replace --version with -v, enabling successful builds on macOS and RHEL 9.
+  • Accelerate Framework: Leverages Apple Silicon’s performance advantages for NumPy compilation.
 
 Tested Platforms
 
 Venvutil has been tested on:
- • macOS 15.1.1
- • RHEL 9
+  • macOS 15.3.1 Sequoia
+  • macOS 15.3.0 Sequoia
+  • macOS 12.7.6 Monterey
+  • RHEL 9
+  • RHEL 8
 
 For detailed NumPy compilation steps, see this repo and the Venvutil README.
 
 Feedback and Support
 
-Give Venvutil a try! If you encounter any issues or have suggestions, please report them in the repository’s Issues section. Your feedback is invaluable in making Venvutil even better.s always you can buy me a coffe at [BuyMeACoffee](https://www.buymeacoffee.com/unixwzrd). or support me on my Patreon [Patreon](https://patreon.com/unixwzrd).
+Give Venvutil a try! If you encounter any issues or have suggestions, please report them in the repository’s Issues section. Your feedback is invaluable in making Venvutil even better.s always you can buy me a coffee at [BuyMeACoffee](https://www.buymeacoffee.com/unixwzrd). or support me on [my Patreon](https://patreon.com/unixwzrd).
 
-## 16 Nov 2024 - Numpy build for Apple Silicon NumPy 1.26 solved
+## 16 Nov 2024 - NumPy build for Apple Silicon NumPy 1.26 solved
 
 **Note this involves a hack** is more than I can write up here.  The basic issue is Meson is not passing the correct flags to detect the linker `ld` version correctly and using `--version` instead of `-v`. I spent a lot of time diving into Meson and even began looking at a NumPy build from source code. Given that and the macOS updates, rebuilding my GNU toolchain from source, it was taking way too much time. I have wrappers for the tools which meson is using and I replace `--version` with `-v` and it works just fine these "hacks" will be included in venvutil which also has a number of others useful tools for working with LLM's and VENV's.
 
